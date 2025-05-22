@@ -104,15 +104,15 @@ public class Fish {
     private Image loadImage(int sizeIndex) {
         String imagePath;
         if (sizeIndex >= 0 && sizeIndex <= 4) {
-            imagePath = "/cn/zjnu/demos/images/fishIconh" + sizeIndex + ".png";
+            imagePath = "/images/fishIconh" + sizeIndex + ".png";
         } else if (sizeIndex >= 5 && sizeIndex <= 18) {
-            imagePath = "/cn/zjnu/demos/images/fishIcon" + sizeIndex + ".png";
+            imagePath = "/images/fishIcon" + sizeIndex + ".png";
         } else if (sizeIndex >= 19 && sizeIndex <= 23) {
-            imagePath = "/cn/zjnu/demos/images/fishIconL" + (sizeIndex - 19) + ".png";
+            imagePath = "/images/fishIconL" + (sizeIndex - 19) + ".png";
         } else if (sizeIndex >= 24 && sizeIndex <= 37) {
-            imagePath = "/cn/zjnu/demos/images/fishIconL" + (sizeIndex - 19) + ".png";
+            imagePath = "/images/fishIconL" + (sizeIndex - 19) + ".png";
         } else {
-            imagePath = "/cn/zjnu/demos/images/fishIcon0.png";
+            imagePath = "/images/fishIcon0.png";
         }
         
         System.out.println("Attempting to load: " + imagePath);  // Debug log

@@ -6,9 +6,6 @@ import java.util.Locale;
 import java.util.Random;
 import java.util.ResourceBundle;
 
-import javax.print.attribute.standard.Media;
-
-import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -20,18 +17,17 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
-import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.animation.AnimationTimer;
 
 public class FeedingFrenzy extends Application {
-    private static final int WIDTH = 800;
-    private static final int HEIGHT = 600;
-    private static final double SMALL_SIZE_THRESHOLD = 50;
-    private static final double MEDIUM_SIZE_THRESHOLD = 80;
-    private static final int MAX_FISHES = 10;
-    private static final int MAX_LARGE_FISHES = 2;
+    private static final int WIDTH = 1180;
+    private static final int HEIGHT = 800;
+    private static final int MAX_FISHES = 20;
 
     private int score;
     private ResourceBundle messages;
@@ -70,7 +66,6 @@ public class FeedingFrenzy extends Application {
         root.getChildren().add(canvas);
         gc = canvas.getGraphicsContext2D();
 
-        // Initialize and play background music
         initializeMusic();
 
         messages = ResourceBundle.getBundle("cn.zjnu.demos.messages", currentLocale);
@@ -86,9 +81,9 @@ public class FeedingFrenzy extends Application {
         root.getChildren().add(restartButton);
 
         backgrounds = new Image[3];
-        backgrounds[0] = loadImage("/cn/zjnu/demos/images/background1.jpg");
-        backgrounds[1] = loadImage("/cn/zjnu/demos/images/background2.jpg");
-        backgrounds[2] = loadImage("/cn/zjnu/demos/images/background3.jpg");
+        backgrounds[0] = loadImage("/images/background1.jpg");
+        backgrounds[1] = loadImage("/images/background2.jpg");
+        backgrounds[2] = loadImage("/images/background3.jpg");
 
         currentScene = 0;
         initializeGame();
@@ -111,7 +106,7 @@ public class FeedingFrenzy extends Application {
     private void initializeMusic() {
         try {
             // Load the music file
-            String musicPath = getClass().getResource("/cn/zjnu/demos/sounds/background_music.mp3").toString();
+            String musicPath = getClass().getResource("sounds/background_music.mp3").toString();
             Media media = new Media(musicPath);
 
             // Create a MediaPlayer instance
@@ -145,6 +140,16 @@ public class FeedingFrenzy extends Application {
         }
     }
 
+    private void handleKeyRelease(KeyEvent event) {
+        KeyCode code = event.getCode();
+        if (code == KeyCode.UP || code == KeyCode.DOWN) {
+            player.setDy(0);
+        }
+        if (code == KeyCode.LEFT || code == KeyCode.RIGHT) {
+            player.setDx(0);
+        }
+    }
+
     private void toggleMusic() {
         if (mediaPlayer != null) {
             if (mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
@@ -164,7 +169,7 @@ public class FeedingFrenzy extends Application {
     }
 
     private void initializeGame() {
-        player = new PlayerFish(WIDTH / 2, HEIGHT / 2, this);
+        player = new PlayerFish(WIDTH / 2, HEIGHT / 2, this, WIDTH, HEIGHT);
         fishes = new ArrayList<>();
         spawnBalancedFishes(MAX_FISHES);
         gameOver = false;
@@ -175,6 +180,7 @@ public class FeedingFrenzy extends Application {
         if (gameOver)
             return;
 
+        
         player.move();
         fishes.forEach(Fish::move);
 
@@ -254,6 +260,7 @@ public class FeedingFrenzy extends Application {
 
     private Image loadImage(String path) {
         try {
+            System.out.println("Loading image: " + path);
             return new Image(getClass().getResourceAsStream(path));
         } catch (Exception e) {
             System.err.println("Error loading image: " + path);
@@ -294,9 +301,38 @@ public class FeedingFrenzy extends Application {
         });
 
         root.getChildren().addAll(englishBtn, chineseBtn);
-        Scene scene = new Scene(root, 800, 600);
+        Scene scene = new Scene(root, WIDTH, HEIGHT);
         languageStage.setScene(scene);
         languageStage.setTitle("Select Language");
         languageStage.show();
+    }
+
+    // Add this method to toggle language at runtime
+    private void toggleLanguage() {
+        if (currentLocale.equals(Locale.ENGLISH)) {
+            currentLocale = Locale.SIMPLIFIED_CHINESE;
+        } else {
+            currentLocale = Locale.ENGLISH;
+        }
+        messages = ResourceBundle.getBundle("cn.zjnu.demos.messages", currentLocale);
+        restartButton.setText(messages.getString("restart"));
+    }
+
+    public void changeScene(String direction) {
+        fishes.clear();
+        spawnBalancedFishes(MAX_FISHES);
+        if (direction.equals("LEFT")) {
+            player.setX(WIDTH - player.getSize());
+            currentScene = 0;
+        } else if (direction.equals("RIGHT")) {
+            player.setX(player.getSize());
+            currentScene = 1;
+        } else if (direction.equals("UP")) {
+            player.setY(HEIGHT - player.getSize());
+            currentScene = 2;
+        } else if (direction.equals("DOWN")) {
+            player.setY(player.getSize());
+            currentScene = 0;
+        }
     }
 }

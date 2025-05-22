@@ -10,10 +10,14 @@ public class PlayerFish extends Fish {
     private Image smallLeftImage, mediumLeftImage, largeLeftImage;
     private Image image;
     private FeedingFrenzy game; // Reference to the game instance
+    private int width;
+    private int height;
 
-    public PlayerFish(double x, double y, FeedingFrenzy game) {
+    public PlayerFish(double x, double y, FeedingFrenzy game, int width, int height) {
         super(x, y, 5); // Initialize with sizeIndex = 5 (larger than the smallest fish)
         this.size = 40; // Starting size
+        this.width = width;
+        this.height = height;
 
         this.dx = 0;
         this.dy = 0;
@@ -21,15 +25,13 @@ public class PlayerFish extends Fish {
         this.facingRight = true;
         this.game = game; // Store reference to the game instance
 
-        System.out.println("Loading player images...");
-
         // Load images for player fish based on new provided filenames
-        smallRightImage = loadImage("/cn/zjnu/demos/images/PlayerFishsmall2r.png");
-        mediumRightImage = loadImage("/cn/zjnu/demos/images/PlayerFishmiddle2r.png");
-        largeRightImage = loadImage("/cn/zjnu/demos/images/PlayerFishlarge2r.png");
-        smallLeftImage = loadImage("/cn/zjnu/demos/images/PlayerFishsmall.png");
-        mediumLeftImage = loadImage("/cn/zjnu/demos/images/PlayerFishmiddle.png");
-        largeLeftImage = loadImage("/cn/zjnu/demos/images/PlayerFishlarge.png");
+        smallRightImage = loadImage("/images/PlayerFishsmall2r.png");
+        mediumRightImage = loadImage("/images/PlayerFishmiddle2r.png");
+        largeRightImage = loadImage("/images/PlayerFishlarge2r.png");
+        smallLeftImage = loadImage("/images/PlayerFishsmall.png");
+        mediumLeftImage = loadImage("/images/PlayerFishmiddle.png");
+        largeLeftImage = loadImage("/images/PlayerFishlarge.png");
 
         this.image = mediumRightImage; // Start with the medium right image, because initial size is medium
 
@@ -70,19 +72,17 @@ public class PlayerFish extends Fish {
         // Detect collision with screen edges and switch scenes
         if (x < 0) {
             game.changeScene("LEFT");
-        } else if (x > 800 - size) {
+        } else if (x > width - size) {
             game.changeScene("RIGHT");
         } else if (y < 0) {
             game.changeScene("UP");
-        } else if (y > 600 - size) {
+        } else if (y > height - size) {
             game.changeScene("DOWN");
         }
     }
 
     public void grow() {
         size += 1; // Increase the size more each time to quickly become larger than other fishes
-
-        System.out.println("Player grew. New size: " + size);
         updateImage();
     }
 
