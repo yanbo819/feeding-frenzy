@@ -6,6 +6,7 @@ import java.util.Locale;
 import java.util.Random;
 import java.util.ResourceBundle;
 
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -17,12 +18,11 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.animation.AnimationTimer;
 
 public class FeedingFrenzy extends Application {
     private static final int WIDTH = 1180;
@@ -40,7 +40,7 @@ public class FeedingFrenzy extends Application {
     private boolean gameOver;
     private Image[] backgrounds;
     private int currentScene;
-    private Random rand = new Random();
+    private final Random rand = new Random();
     private Button restartButton;
     private Stage languageStage;
 

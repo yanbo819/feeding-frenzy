@@ -4,14 +4,14 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
 public class PlayerFish extends Fish {
-    private double dx, dy;
+    private double playerDx, playerDy;
     private boolean facingRight;
-    private Image smallRightImage, mediumRightImage, largeRightImage;
-    private Image smallLeftImage, mediumLeftImage, largeLeftImage;
+    private final Image smallRightImage, mediumRightImage, largeRightImage;
+    private final Image smallLeftImage, mediumLeftImage, largeLeftImage;
     private Image image;
-    private FeedingFrenzy game; // Reference to the game instance
-    private int width;
-    private int height;
+    private final FeedingFrenzy game; // Reference to the game instance
+    private final int width;
+    private final int height;
 
     public PlayerFish(double x, double y, FeedingFrenzy game, int width, int height) {
         super(x, y, 5); // Initialize with sizeIndex = 5 (larger than the smallest fish)
@@ -19,8 +19,8 @@ public class PlayerFish extends Fish {
         this.width = width;
         this.height = height;
 
-        this.dx = 0;
-        this.dy = 0;
+        this.playerDx = 0;
+        this.playerDy = 0;
         this.size = 40; // Start with a larger size to be initially bigger than small fishes
         this.facingRight = true;
         this.game = game; // Store reference to the game instance
@@ -52,7 +52,7 @@ public class PlayerFish extends Fish {
     }
 
     public void setDx(double dx) {
-        this.dx = dx;
+        this.playerDx = dx;
         if (dx > 0) {
             facingRight = true;
         } else if (dx < 0) {
@@ -62,12 +62,13 @@ public class PlayerFish extends Fish {
     }
 
     public void setDy(double dy) {
-        this.dy = dy;
+        this.playerDy = dy;
     }
 
+    @Override
     public void move() {
-        x += dx;
-        y += dy;
+        x += playerDx;
+        y += playerDy;
 
         // Detect collision with screen edges and switch scenes
         if (x < 0) {

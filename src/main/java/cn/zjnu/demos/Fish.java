@@ -10,7 +10,7 @@ public class Fish {
     protected double dx, dy; 
     protected double size;
     protected boolean alive;
-    private Image image;
+    private final Image image;
 
     // Constructor to create a new fish
     public Fish(double x, double y, int sizeIndex) {

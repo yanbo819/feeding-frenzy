@@ -11,7 +11,9 @@ public class Food {
     private boolean active;
     
     public Food() {
-        respawn();
+        x = rand.nextInt(760) + 20;
+        y = rand.nextInt(560) + 20;
+        active = true;
     }
     
     public void respawn() {
