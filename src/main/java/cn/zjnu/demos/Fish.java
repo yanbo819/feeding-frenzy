@@ -5,44 +5,41 @@ import java.io.InputStream;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
-public class Fish {
+abstract class Fish {
     protected double x, y;
-    protected double dx, dy; 
+    protected double dx, dy;
     protected double size;
     protected boolean alive;
-    private final Image image;
+    protected  final Image image; // This will hold the default image for the fish
 
     // Constructor to create a new fish
     public Fish(double x, double y, int sizeIndex) {
         this.x = x;
         this.y = y;
-        this.size = calculateSize(sizeIndex); 
+        this.size = calculateSize(sizeIndex);
         this.alive = true;
-        this.image = loadImage(sizeIndex); 
+        this.image = loadImage(sizeIndex); // Load image based on size index
 
         double speedFactor = getSpeedFactor(sizeIndex);
-        this.dx = (Math.random() - 0.3) * speedFactor; 
-        this.dy = (Math.random() - 0.3) * speedFactor; 
-
-        System.out.println("Fish created. Size index: " + sizeIndex + ", Size: " + size + ", Speed: (" + dx + ", " + dy + ")");
+        // Randomize initial direction for both dx and dy
+        this.dx = (Math.random() * 2 - 1) * speedFactor; // From -speedFactor to +speedFactor
+        this.dy = (Math.random() * 2 - 1) * speedFactor;
     }
 
     private double getSpeedFactor(int sizeIndex) {
-     
         if (sizeIndex >= 0 && sizeIndex <= 4) {
-            return 4; 
+            return 4;
         } else if (sizeIndex >= 5 && sizeIndex <= 18) {
             return 3;
         } else if (sizeIndex >= 19 && sizeIndex <= 23) {
-            return 2; 
+            return 2;
         } else if (sizeIndex >= 24 && sizeIndex <= 37) {
-            return 1.5; 
+            return 1.5;
         } else {
-            return 3; 
+            return 3;
         }
     }
 
-    
     public double getX() {
         return x;
     }
@@ -67,14 +64,14 @@ public class Fish {
         x += dx;
         y += dy;
 
-        // Handle bouncing at the edges
-        if (x < 0 || x > 800 - size) dx = -dx; // Reverse direction on x-axis
-        if (y < 0 || y > 600 - size) dy = -dy; // Reverse direction on y-axis
+        // Handle bouncing at the edges (using main game's WIDTH and HEIGHT for consistency)
+        if (x < 0 || x > 1024 - size) dx = -dx;
+        if (y < 0 || y > 768 - size) dy = -dy;
     }
 
     // Method to render the fish
     public void render(GraphicsContext gc) {
-        if (alive) {
+        if (alive && image != null) { // Ensure image is not null before drawing
             gc.drawImage(image, x, y, size, size);
         }
     }
@@ -87,17 +84,16 @@ public class Fish {
 
     // Method to calculate the size of the fish based on the size index
     private double calculateSize(int sizeIndex) {
-        // Calculate sizes for different fish types
         if (sizeIndex >= 0 && sizeIndex <= 4) {
-            return 20 + sizeIndex * 5; // Small fish sizes: 20, 25, 30, 35, 40
+            return 20 + sizeIndex * 5;
         } else if (sizeIndex >= 5 && sizeIndex <= 18) {
-            return 30 + (sizeIndex - 5) * 3; // Medium fish sizes: 50, 53, ..., 89
+            return 30 + (sizeIndex - 5) * 3;
         } else if (sizeIndex >= 19 && sizeIndex <= 23) {
-        	return 60 + (sizeIndex - 19) * 4; // Big fish sizes: 100, 105, 110, 115, 120
+            return 60 + (sizeIndex - 19) * 4;
         } else if (sizeIndex >= 24 && sizeIndex <= 37) {
-            return 130 + (sizeIndex - 24) * 4; // Large fish sizes: 130, 134, ..., 186
+            return 130 + (sizeIndex - 24) * 4;
         } else {
-            return 20; // Default size
+            return 20;
         }
     }
 
@@ -109,20 +105,17 @@ public class Fish {
             imagePath = "/images/fishIcon" + sizeIndex + ".png";
         } else if (sizeIndex >= 19 && sizeIndex <= 23) {
             imagePath = "/images/fishIconL" + (sizeIndex - 19) + ".png";
-        } else if (sizeIndex >= 24 && sizeIndex <= 37) {
+        } else if (sizeIndex >= 24 && sizeIndex <= 37) { // This range uses the same "L" series, adjust as per available images
             imagePath = "/images/fishIconL" + (sizeIndex - 19) + ".png";
         } else {
             imagePath = "/images/fishIcon0.png";
         }
-        
-        System.out.println("Attempting to load: " + imagePath);  // Debug log
+
         InputStream stream = getClass().getResourceAsStream(imagePath);
-        
         if (stream == null) {
-            System.err.println("Failed to load image at: " + imagePath);
+            // If an image is not found, return null. The render method will handle it.
             return null;
         }
-        
         return new Image(stream);
     }
 }
