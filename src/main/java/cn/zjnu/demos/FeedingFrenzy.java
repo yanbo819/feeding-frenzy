@@ -449,74 +449,77 @@ public class FeedingFrenzy extends Application {
         }
     }
 
-    private void showLanguageSelection() {
-        if (languageStage == null) {
-            languageStage = new Stage();
+private void showLanguageSelection() {
+    if (languageStage == null) {
+        languageStage = new Stage();
+    }
+    StackPane root = new StackPane();
+    root.setStyle("-fx-background-color: linear-gradient(to bottom right, #5d3ba1, #3a1d6e);");
+
+    VBox mainBox = new VBox(30);
+    mainBox.setAlignment(Pos.CENTER);
+
+    Label titleLabel = new Label("Feeding Frenzy");
+    titleLabel.setFont(Font.font("Arial", FontWeight.BOLD, 60));
+    titleLabel.setTextFill(Color.WHITE);
+    titleLabel.setStyle("-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.7), 10, 0, 0, 0);");
+    mainBox.getChildren().add(titleLabel);
+
+    Button startGameButton = new Button();
+    String buttonStyle = "-fx-font-size: 24px; -fx-background-color: linear-gradient(to bottom, #6a4bbc, #4a2d96); "
+            + "-fx-text-fill: white; -fx-background-radius: 15; -fx-padding: 15 40; "
+            + "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 8, 0, 0, 2);";
+    String hoverStyle = "-fx-background-color: linear-gradient(to bottom, #7b5acd, #5b3ea6); -fx-scale-x: 1.05; -fx-scale-y: 1.05;";
+
+    messages = ResourceBundle.getBundle("cn.zjnu.demos.messages", currentLocale);
+    startGameButton.setText(messages.getString("startGame"));
+    startGameButton.setStyle(buttonStyle);
+    startGameButton.setOnMouseEntered(e -> startGameButton.setStyle(buttonStyle + hoverStyle));
+    startGameButton.setOnMouseExited(e -> startGameButton.setStyle(buttonStyle));
+    startGameButton.setOnAction(e -> {
+        languageStage.close();
+        startMainGame();
+    });
+
+    Button exitAppButton = new Button(messages.getString("exitApp"));
+    exitAppButton.setStyle(buttonStyle);
+    exitAppButton.setOnMouseEntered(e -> exitAppButton.setStyle(buttonStyle + hoverStyle));
+    exitAppButton.setOnMouseExited(e -> exitAppButton.setStyle(buttonStyle));
+
+    // Add language toggle button
+    Button langToggleBtn = new Button();
+    langToggleBtn.setStyle("-fx-font-size: 16px; -fx-background-color: rgba(255,255,255,0.3); " +
+            "-fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 5 15;");
+    StackPane.setAlignment(langToggleBtn, Pos.TOP_RIGHT);
+    StackPane.setMargin(langToggleBtn, new javafx.geometry.Insets(20, 20, 0, 0));
+    
+    // Set initial text based on current locale
+    if (currentLocale.equals(Locale.ENGLISH)) {
+        langToggleBtn.setText("中文");
+    } else {
+        langToggleBtn.setText("English");
+    }
+    
+    langToggleBtn.setOnAction(e -> {
+        // Toggle between English and Chinese
+        if (currentLocale.equals(Locale.ENGLISH)) {
+            currentLocale = Locale.SIMPLIFIED_CHINESE;
+            langToggleBtn.setText("English");
+        } else {
+            currentLocale = Locale.ENGLISH;
+            langToggleBtn.setText("中文");
         }
-        StackPane root = new StackPane();
-
-        root.setStyle("-fx-background-color: linear-gradient(to bottom right, #5d3ba1, #3a1d6e);");
-
-        VBox mainBox = new VBox(30);
-        mainBox.setAlignment(Pos.CENTER);
-
-        Label titleLabel = new Label("Feeding Frenzy");
-        titleLabel.setFont(Font.font("Arial", FontWeight.BOLD, 60));
-        titleLabel.setTextFill(Color.WHITE);
-        titleLabel.setStyle("-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.7), 10, 0, 0, 0);");
-        mainBox.getChildren().add(titleLabel);
-
-        Button startGameButton = new Button();
-        String buttonStyle = "-fx-font-size: 24px; -fx-background-color: linear-gradient(to bottom, #6a4bbc, #4a2d96); "
-                + "-fx-text-fill: white; -fx-background-radius: 15; -fx-padding: 15 40; "
-                + "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 8, 0, 0, 2);";
-        String hoverStyle = "-fx-background-color: linear-gradient(to bottom, #7b5acd, #5b3ea6); -fx-scale-x: 1.05; -fx-scale-y: 1.05;";
-
+        
+        // Update UI text
         messages = ResourceBundle.getBundle("cn.zjnu.demos.messages", currentLocale);
         startGameButton.setText(messages.getString("startGame"));
-        startGameButton.setStyle(buttonStyle);
-        startGameButton.setOnMouseEntered(e -> startGameButton.setStyle(buttonStyle + hoverStyle));
-        startGameButton.setOnMouseExited(e -> startGameButton.setStyle(buttonStyle));
+        exitAppButton.setText(messages.getString("exitApp"));
+    });
 
-        Button englishBtn = new Button("English");
-        englishBtn.setStyle(buttonStyle);
-        englishBtn.setOnMouseEntered(e -> englishBtn.setStyle(buttonStyle + hoverStyle));
-        englishBtn.setOnMouseExited(e -> englishBtn.setStyle(buttonStyle));
-
-        Button chineseBtn = new Button("中文");
-        chineseBtn.setStyle(buttonStyle);
-        chineseBtn.setOnMouseEntered(e -> chineseBtn.setStyle(buttonStyle + hoverStyle));
-        chineseBtn.setOnMouseExited(e -> chineseBtn.setStyle(buttonStyle));
-
-        Button exitAppButton = new Button(messages.getString("exitApp"));
-        exitAppButton.setStyle(buttonStyle);
-        exitAppButton.setOnMouseEntered(e -> exitAppButton.setStyle(buttonStyle + hoverStyle));
-        exitAppButton.setOnMouseExited(e -> exitAppButton.setStyle(buttonStyle));
-
-        englishBtn.setOnAction(e -> {
-            currentLocale = Locale.ENGLISH;
-            messages = ResourceBundle.getBundle("cn.zjnu.demos.messages", currentLocale);
-            startGameButton.setText(messages.getString("startGame"));
-            exitAppButton.setText(messages.getString("exitApp"));
-        });
-
-        chineseBtn.setOnAction(e -> {
-            currentLocale = Locale.SIMPLIFIED_CHINESE;
-            messages = ResourceBundle.getBundle("cn.zjnu.demos.messages", currentLocale);
-            startGameButton.setText(messages.getString("startGame"));
-            exitAppButton.setText(messages.getString("exitApp"));
-        });
-
-        startGameButton.setOnAction(e -> {
-            startMainGame();
-            languageStage.hide();
-        });
-
-        exitAppButton.setOnAction(e -> System.exit(0));
-
-        mainBox.getChildren().addAll(startGameButton, englishBtn, chineseBtn, exitAppButton);
-        root.getChildren().add(mainBox);
-
+          exitAppButton.setOnAction(e -> System.exit(0));
+        mainBox.getChildren().addAll(startGameButton, exitAppButton);
+        root.getChildren().addAll(mainBox, langToggleBtn);
+    
         Scene scene = new Scene(root, WIDTH, HEIGHT);
         languageStage.setScene(scene);
         languageStage.setTitle("Feeding Frenzy - Main Menu");
